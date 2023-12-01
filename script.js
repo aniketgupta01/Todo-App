@@ -5,7 +5,7 @@ let pendingTask = document.getElementById("pending");
 let doneTask = document.getElementById("done");
 myForm.addEventListener("submit", createList);
 
-function createList(e) {
+async function createList(e) {
   e.preventDefault();
   let myObj = {
     name: todoName.value.toUpperCase(),
@@ -15,56 +15,51 @@ function createList(e) {
   todoName.value = "";
   todoDescription.value = "";
 
-  axios
-    .post(
-      "https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData",
-      myObj
-    )
-    .then((res) => {
+  let res = await axios.post("https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData",myObj)
+    try {
+      
       showonPending(res.data);
-    })
-    .catch((err) => {
+    }
+    catch(err){
       console.log(err);
-    });
+    }
 }
-window.addEventListener("DOMContentLoaded", () => {
-  axios
-    .get("https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData")
-    .then((res) => {
-      for (let i = 0; i < res.data.length; i++) {
+
+
+window.addEventListener("DOMContentLoaded", async() => {
+  let res = await axios.get("https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData")
+    try {
+      for (let i = 0; i < res.data.length; i=i+1) {
         if (res.data[i].isDone == false) {
           showonPending(res.data[i]);
         } else {
-          showonDone(res.data[i]);
+          
+          showonDone(res.data[i]._id);
         }
       }
-    })
-    .catch((err) => {
-      //console.log(err);
-    });
+    }
+    catch(err){
+      console.log(err);
+    }
 });
 
-function showonPending(obj) {
+
+
+ function showonPending(obj) {
   let name = obj.name;
   let des = obj.description;
   let id = obj._id;
 
   let list = `<li id="${id}"> <span class="task">${name}</span> : (<span class="description">${des}</span>) 
-                 <button class="donebtn" onclick=showonDone('${id}')>Done</button>
+                 <button class="donebtn" onclick=makeitDone('${id}')>Done</button>
                  <button class="removebtn" onclick=removePending('${id}')>Remove</button></li> `;
 
   pendingTask.innerHTML += list;
 }
 
-function showonDone(e) {
-  let id = e._id;
-  
-
-  axios
-    .get(
-      `https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData/${id}`
-    )
-    .then((res) => {
+async function makeitDone(id) { 
+  let res = await axios.get(`https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData/${id}`)
+    try {
       let aaname = res.data.name;
       let aades = res.data.description;
       let list = `<li id="${id}"> <span class="task">${aaname}</span> : (<span class="description">${aades}</span>)
@@ -72,32 +67,32 @@ function showonDone(e) {
 
       doneTask.innerHTML += list;
 
-      axios
-        .put(
-          `https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData/${id}`,
+      let res2 = await axios.put(`https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData/${id}`,
           {
             name: aaname,
             description: aades,
             isDone: true,
           }
         )
-        .then((res) => {})
-        .catch((err) => {
+        try{
+          console.log();
+        }
+        catch(err){
           console.log(err);
-        });
-    })
-    .catch((err) => {
+        }
+    }
+    catch(err){
       console.log(err);
-    });
+    }
     let removed = document.getElementById(id);
-  removed.parentElement.removeChild(removed);
+    removed.parentElement.removeChild(removed);
 }
 
-function removePending(e) {
+ function removePending(e) {
   let removed = document.getElementById(e);
   removed.parentElement.removeChild(removed);
   axios.delete(
-    `https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData/${e}`
+    `https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData/${e}`
   );
 }
 function removeDone(e) {
@@ -105,6 +100,28 @@ function removeDone(e) {
   removed.parentElement.removeChild(removed);
 
   axios.delete(
-    `https://crudcrud.com/api/ee1282e9b8e247f2890cc1bdecfed2a3/todoData/${e}`
+    `https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData/${e}`
   );
 }
+
+async function showonDone(id){
+
+  let res = await axios.get(`https://crudcrud.com/api/d24ed3f3ec344addbddda72ec0b69435/todoData/${id}`)
+  try{
+    let aaname = res.data.name;
+      let aades = res.data.description;
+      let list = `<li id="${id}"> <span class="task">${aaname}</span> : (<span class="description">${aades}</span>)
+        <button class="removebtn" onclick=removeDone('${id}')>Remove</button></li> `;
+
+      doneTask.innerHTML += list;
+
+  }
+  catch(err){
+    console.log(err)
+  }
+  
+
+
+}
+
+
