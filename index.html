@@ -4,24 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo List</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <div class="container">
         <h2>TO-DO LIST</h2>
         <div class="form">
             <form id="my-form">
-                <label for="name">To-Do Name:</label>
-                <input type="text" id="name">
-                <label for="description">Description:</label>
-                <input type="text" id="description">
-                <input type="submit" id="add-item" value="Add Item">
+                <label for="name">To-Do Name:</label> <br>
+                <input type="text" id="name" required><br>
+                <label for="description">Description:</label><br> 
+                <input type="text" id="description" required><br>
+                <input type="submit" id="add-item" class="submit2" value="Add Item">
             </form>
         </div>
         <div class="pending" id="pending">
-            <h3>To-Do's Pending</h3>
+            <h3>To-Do's Pending-:</h3>
         </div>
         <div class="done" id="done">
-            <h3>To-Do's Done</h3>
+            <h3>To-Do's Done-:</h3>
         </div>
     </div>
 
